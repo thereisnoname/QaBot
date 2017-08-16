@@ -1,2 +1,6 @@
-# Qabot
-QA robot based on hubot, etc...
+# CIBot (oldname Qabot)
+A hybrid chatbot enhenced by crowd intelligence.
+
+[RUN]
+    cd bin
+    ./start-all.sh

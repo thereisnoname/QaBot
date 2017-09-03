@@ -1,18 +1,12 @@
-[apt/yum]
-python3
-python3-pip
-sqlite3
-node/npm
-redis
+# Base Tools
+apt install python2 python2-pip python3 python3-pip sqlite3 screen
 
-[pip]
-django-cors-headers
-django
-jieba
-aiml
-lxml
-beautifulsoup4
 
-[npm]
-yo
-generator-hubot
+# QaBot
+pip3 install django django-cors-headers requests socket jieba
+
+# QA-Snake
+pip2 install jieba aiml lxml beautifulsoup4
+
+# wxBot
+pip2 install requests pyqrcode pypng Pillow

@@ -32,10 +32,6 @@ ALLOWED_HOSTS = [
     'qabot.kahsolt.tk',
 ]
 
-DJANGO_HOST = '127.0.0.1'
-DJANGO_PORT = 50000
-QASNAKE_HOST = '127.0.0.1'
-QASNAKE_PORT = 50001
 
 # Application definition
 
@@ -90,14 +86,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
-    #'production': {
-    #    'ENGINE': 'django.db.backends.mysql',
-    #    'NAME': 'socialflow',
-    #    'USER': 'socialflow',
-    #    'PASSWORD': 'socialflow',
-    #    'HOST': '127.0.0.1',
-    #    'PORT': '3306',
-    #}
+    # 'production': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'qabot',
+    #     'USER': 'qabot',
+    #     'PASSWORD': 'qabot',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '3306',
+    # }
 }
 
 
@@ -199,3 +195,7 @@ LOGGING = {
         },
     }
 }
+
+# QA-Snake
+QASNAKE_HOST = '127.0.0.1'
+QASNAKE_PORT = 50000

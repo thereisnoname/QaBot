@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from .models import *
+from app.models import *
 
 # 定时任务 Scheds
 #

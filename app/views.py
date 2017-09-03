@@ -12,7 +12,7 @@ from app.scheds import *
 # Headless API Views
 @csrf_exempt
 def user(request):
-    if request.method == 'POST':
+    if request.method == 'POST':    # TODO: call User.update_userlist()
         pass
 
 
@@ -31,7 +31,7 @@ def index(request):
     if request.method == 'POST':
         kw = request.POST.get('kw')
         if kw:
-            ans = q(kw) # TODO: dispatch?
+            ans = '暂时没设计好:('    # NOT urgent TODO: dispatch?
             return render(request, 'index.html', {'ans': ans})
     return render(request, 'index.html')
 

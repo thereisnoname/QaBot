@@ -32,7 +32,6 @@ ALLOWED_HOSTS = [
     'qabot.kahsolt.tk',
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -135,6 +134,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 #     os.path.join(BASE_DIR, "static"),
 #     os.path.join(BASE_DIR, "resource"),
 # ]
+
+
+# djang admin app
+DJANGO_ADMIN_SUPERUSER_USERNAME = 'qabot'
+DJANGO_ADMIN_SUPERUSER_PASSWORD = 'qabot1379'
 
 
 # django-cors-headers plugin

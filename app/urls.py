@@ -1,6 +1,5 @@
 from django.conf.urls import url
 from app import views
-from app import OAuth_discord
 
 # 路由分发层 Router
 #   函数名尽量与url对应，或者遵守一定的命名约定只要便于管理即可

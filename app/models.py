@@ -12,7 +12,7 @@ from django.db import models
 
 # [用户] =>{用户标签} & <=[问题]|[答案]
 class User(models.Model):
-    id = models.CharField(max_length=128, help_text='所依赖的聊天工具平台上用户唯一标识')
+    uid = models.CharField(max_length=128, help_text='所依赖的聊天工具平台上用户唯一标识')
     nickname = models.CharField(max_length=64, help_text='昵称')
     name = models.CharField(null=True, blank=True, max_length=64, help_text='实名，或者登录名')
     email = models.EmailField(null=True, blank=True)

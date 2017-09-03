@@ -1,7 +1,5 @@
-# Byte-compiled / optimized / DLL files
-*/__pycache__/
-*.py[cod]
-*$py.class
+# Python Bytecode
+*/__pycache__
 
 # IDEA project metafiles
 .idea
@@ -9,6 +7,10 @@
 # Logs
 log/*.log*
 
-# third-party uncompressed
+# db related
+app/migrations
+db.sqlite3
+
+# third-party UNCOMPRESSED
 lib/wxBot
 lib/QA-Snake

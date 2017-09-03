@@ -15,16 +15,18 @@ echo "DONE!"
 echo
 
 echo "[Step: 3/${STEPS}] Django: makemigrations app"
+$PY3 $QABOT/manage.py makemigrations
 $PY3 $QABOT/manage.py makemigrations app
 echo "DONE!"
 echo
 
 echo "[Step: 4/${STEPS}] Django: migrate app"
+$PY3 $QABOT/manage.py migrate
 $PY3 $QABOT/manage.py migrate app
 echo "DONE!"
 echo
 
-echo "[Step: 5/${STEPS}] Dajngo: createsuperuser"
+echo "[Step: 5/${STEPS}] Django: createsuperuser"
 $PY3 $QABOT/manage.py createsuperuser --username qabot --email qabot@kahsolt.tk
 echo "DONE!"
 echo

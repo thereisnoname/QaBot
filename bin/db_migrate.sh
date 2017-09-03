@@ -10,6 +10,6 @@ echo "DONE!"
 echo
 
 echo "[Step: 2/${STEPS}] Django: migrate"
-$PY3 $QABOT/manage.py migrate
+$PY3 $QABOT/manage.py migrate app
 echo "DONE!"
 echo

@@ -18,6 +18,13 @@ def update_userlist(users):
     User.update_userlist(users)
     # u, created = User.objects.get_or_create(uid=users['uid'], nickname=users['nickname'], gender=users['gender'])
 
+def update_questionlist(ques):
+    q = Question.update_questionlist(ques)
+    return q
+
+def update_answerlist(ans):
+    Answer.update_answerlist(ans)
+
 
 def qa_snake(kw):
     try:

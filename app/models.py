@@ -40,7 +40,7 @@ class Question(models.Model):
     user = models.ForeignKey(User, help_text='题主')
     content = models.TextField(help_text='问题内容')
     keywords = models.ManyToManyField('Keyword', help_text='问题关键字')
-
+    qid = models.AutoField(primary_key=True, help_text='问题ID, 问题的唯一标识')
     create_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -50,6 +50,13 @@ class Question(models.Model):
     def find_alike(cls):
         # TODO: 用关键词列表查询已缓存的相似问题返回问题列表，以决定缓存新回答时是否新建问题、遇到问题时取出缓存的备选答案
         pass
+
+    @classmethod
+    #更新app_question数据库
+    def update_questionlist(cls, dist):
+        u = User.objects.get(uid = dist['uid'])
+        q,created = Question.objects.get_or_create(user = u,content = dist['question'])
+        return q
 
 
 # [答案] ->[用户]|[问题]
@@ -65,6 +72,12 @@ class Answer(models.Model):
 
     def __str__(self):
         return '[%s] %s' % (self.user.name, self.content[:10])
+
+    @classmethod
+    def update_answerlist(cls, dist):
+        u = User.objects.get(uid = dist['uid'])
+        q = Question.objects.get(qid = dist['qid'])
+        a, created = Answer.objects.get_or_create(user=u, content=dist['answer'], question=q)
 
 
 # {用户标签} <=[用户]

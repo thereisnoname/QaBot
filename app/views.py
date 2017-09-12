@@ -32,16 +32,7 @@ def user(request):
 
             update_userlist(u)
         return  response_write(die(200))
-    id = '666'
-    nickname = 'luxia'
-    gender = 1
-    u = {
-        'uid': id,
-        'nickname': nickname,
-        'gender': gender
-    }
-    update_userlist(u)
-    return HttpResponse("HELLO WORLD")
+    return HttpResponse("The request should be POST")
 
 
 @csrf_exempt
@@ -53,17 +44,24 @@ def q(request):
 
         uid = data.get('uid') or -1
         question = data.get('question') or ''
-        print('Get <%d>: %s' % (uid, question))
+        print('Get <%s>: %s' % (uid, question))
 
-        if len(question) <= 5:
+        q = {
+            'uid' : uid,
+            'question' : question,
+        }
+        qid = update_questionlist(q).qid
+
+        ans = Answer.objects.filter(question = qid)
+        if ans.exists():
             data = {
-                'answer': "这个问题很短，答案很简单",
-                'qid': 42,
+                'answer': ans[0].content,
+                'qid': qid,
             }
         else:
             data = {
                 'helpers': ['@dsfsd6s46SDVD', '@DVS68d4DVSvsDVSv4654v6s8'],
-                'qid': 13,
+                'qid': qid,
             }
         return response_write(data)
 
@@ -78,9 +76,20 @@ def a(request):
         uid = data.get('uid') or -1
         qid = data.get('qid') or ''
         answer = data.get('answer') or ''
-        print('Get <%d>-[%d]: %s' % (uid, qid, answer))
+        print('Get <%s>-[%d]: %s' % (uid, qid, answer))
 
-        return response_write({'info':'OK'})
+        if not Question.objects.filter(qid = qid).exists():
+            return response_write({'info':'The Question you post is not exist!'})
+
+        a = {
+            'uid' : uid,
+            'qid' : qid,
+            'answer' : answer
+        }
+
+        update_answerlist(a)
+
+        return response_write({'info': 'OK'})
 
 
 # Browser-oriented Views

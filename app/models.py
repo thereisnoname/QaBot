@@ -12,7 +12,7 @@ from django.db import models
 
 # [用户] =>{用户标签} & <=[问题]|[答案]
 class User(models.Model):
-    uid = models.CharField(max_length=128, help_text='所依赖的聊天工具平台上用户唯一标识')
+    uid = models.CharField(max_length=128, primary_key=True, help_text='所依赖的聊天工具平台上用户唯一标识')
     nickname = models.CharField(max_length=64, help_text='昵称')
     name = models.CharField(null=True, blank=True, max_length=64, help_text='实名，或者登录名')
     _GENDER = (
@@ -28,13 +28,12 @@ class User(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return self.uid
 
+    # 用用户数据字典列表更新数据库的用户信息列表
     @classmethod
-    def update_userlist(cls):
-        # TODO: 用用户数据字典列表更新数据库的用户信息列表
-        pass
-
+    def update_userlist(cls,dict):
+        u,created = User.objects.get_or_create(uid=dict['uid'], nickname=dict['nickname'], gender=dict['gender'])
 
 # [问题] ->[用户] & =>{问题关键词} & <=[答案]
 class Question(models.Model):

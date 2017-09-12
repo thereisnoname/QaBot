@@ -134,7 +134,6 @@ def main():
     bot = QaBot()
     bot.DEBUG = True
     bot.conf['qr'] = 'tty'  # use terminal instead of 'png'
-
     bot.run()
 
 

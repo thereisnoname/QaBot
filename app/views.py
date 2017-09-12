@@ -17,7 +17,31 @@ def user(request):
         if not data:
             return response_write(die(400))
         print('Got users: %s' % data)
+
+        data_all = data['users']
+        for data in data_all:
+            id = data.get('id') or -1
+            nickname = data.get('nickname') or ''
+            gender = data.get('gender') or 0
+
+            u = {
+                'uid' : id,
+                'nickname' : nickname,
+                'gender' : gender
+            }
+
+            update_userlist(u)
         return  response_write(die(200))
+    id = '666'
+    nickname = 'luxia'
+    gender = 1
+    u = {
+        'uid': id,
+        'nickname': nickname,
+        'gender': gender
+    }
+    update_userlist(u)
+    return HttpResponse("HELLO WORLD")
 
 
 @csrf_exempt

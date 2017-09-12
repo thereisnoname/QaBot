@@ -14,3 +14,4 @@ db.sqlite3
 # third-party UNCOMPRESSED
 lib/wxBot
 lib/QA-Snake
+lib/temp

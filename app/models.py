@@ -15,6 +15,12 @@ class User(models.Model):
     uid = models.CharField(max_length=128, help_text='所依赖的聊天工具平台上用户唯一标识')
     nickname = models.CharField(max_length=64, help_text='昵称')
     name = models.CharField(null=True, blank=True, max_length=64, help_text='实名，或者登录名')
+    _GENDER = (
+        (0, '未知'),
+        (1, '男'),
+        (2, '女'),
+    )
+    gender = models.PositiveSmallIntegerField(blank=True, choices=_GENDER, default=0)
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(null=True, blank=True, max_length=11)
     tags = models.ManyToManyField('Tag')

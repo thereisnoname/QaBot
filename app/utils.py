@@ -55,6 +55,7 @@ def die(codeno):
         401: 'Not Authorized',
         403: 'Missing Parameter or TypeError',
         404: 'Resource Not Found',
+        405: 'Method Not Allowed',
         500: 'Server Internal Error',
     }
 

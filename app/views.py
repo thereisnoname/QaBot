@@ -12,17 +12,51 @@ from app.scheds import *
 # Headless API Views
 @csrf_exempt
 def user(request):
-    if request.method == 'POST':    # TODO: call User.update_userlist()
-        pass
+    if request.method == 'POST':
+        data = json_load(request.body)
+        if not data:
+            return response_write(die(400))
+        print('Got users: %s' % data)
+        return  response_write(die(200))
 
 
 @csrf_exempt
 def q(request):
     if request.method == 'POST':
-        data = json_load(request.body)      # TODO: what json format
-        if data and data.get('kw'):
-            ans = qa_snake(data.get('kw'))
-            return response_write({'ans': ans})
+        data = json_load(request.body)
+        if not data:
+            return response_write(die(400))
+
+        uid = data.get('uid') or -1
+        question = data.get('question') or ''
+        print('Get <%d>: %s' % (uid, question))
+
+        if len(question) <= 5:
+            data = {
+                'answer': "这个问题很短，答案很简单",
+                'qid': 42,
+            }
+        else:
+            data = {
+                'helpers': ['@dsfsd6s46SDVD', '@DVS68d4DVSvsDVSv4654v6s8'],
+                'qid': 13,
+            }
+        return response_write(data)
+
+
+@csrf_exempt
+def a(request):
+    if request.method == 'POST':
+        data = json_load(request.body)
+        if not data:
+            return response_write(die(400))
+
+        uid = data.get('uid') or -1
+        qid = data.get('qid') or ''
+        answer = data.get('answer') or ''
+        print('Get <%d>-[%d]: %s' % (uid, qid, answer))
+
+        return response_write({'info':'OK'})
 
 
 # Browser-oriented Views

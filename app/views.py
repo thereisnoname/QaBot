@@ -23,6 +23,8 @@ def q(request):
         if data and data.get('kw'):
             ans = qa_snake(data.get('kw'))
             return response_write({'ans': ans})
+        else:
+            return response_write({'ans':'no such ans'})
 
 
 # Browser-oriented Views
@@ -31,9 +33,12 @@ def index(request):
     if request.method == 'POST':
         kw = request.POST.get('kw')
         if kw:
-            ans = '暂时没设计好:('    # NOT urgent TODO: dispatch?
-            return render(request, 'index.html', {'ans': ans})
-    return render(request, 'index.html')
+            ans = qa_snake(kw)    # NOT urgent TODO: dispatch?
+            if ans:
+                return render(request, 'index.html', {'ans': ans})
+            else:
+                return render(request,'index.html',{'ans':'no such ans in qasnake'+'\t'+'key words is '+kw})
+    return render(request, 'index.html',{'ans':'no such keyword'})
 
 
 @csrf_exempt

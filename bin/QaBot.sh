@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo 'This script has been deprecated, try run componets manually please...:('
+
 QABOT_HOME="`pwd`/.."
 WXBOT_HOME="`pwd`/../lib/wxBot"
 QASNAKE_HOME="`pwd`/../lib/QA-Snake/QA"

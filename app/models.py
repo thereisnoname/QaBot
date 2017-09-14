@@ -12,9 +12,15 @@ from django.db import models
 
 # [用户] =>{用户标签} & <=[问题]|[答案]
 class User(models.Model):
-    uid = models.CharField(max_length=128, help_text='所依赖的聊天工具平台上用户唯一标识')
+    uid = models.CharField(max_length=128, primary_key=True, help_text='所依赖的聊天工具平台上用户唯一标识')
     nickname = models.CharField(max_length=64, help_text='昵称')
     name = models.CharField(null=True, blank=True, max_length=64, help_text='实名，或者登录名')
+    _GENDER = (
+        (0, '未知'),
+        (1, '男'),
+        (2, '女'),
+    )
+    gender = models.PositiveSmallIntegerField(blank=True, choices=_GENDER, default=0)
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(null=True, blank=True, max_length=11)
     tags = models.ManyToManyField('Tag')
@@ -22,20 +28,19 @@ class User(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return self.uid
 
+    # 用用户数据字典列表更新数据库的用户信息列表
     @classmethod
-    def update_userlist(cls):
-        # TODO: 用用户数据字典列表更新数据库的用户信息列表
-        pass
-
+    def update_userlist(cls,dict):
+        u,created = User.objects.get_or_create(uid=dict['uid'], nickname=dict['nickname'], gender=dict['gender'])
 
 # [问题] ->[用户] & =>{问题关键词} & <=[答案]
 class Question(models.Model):
     user = models.ForeignKey(User, help_text='题主')
     content = models.TextField(help_text='问题内容')
     keywords = models.ManyToManyField('Keyword', help_text='问题关键字')
-
+    qid = models.AutoField(primary_key=True, help_text='问题ID, 问题的唯一标识')
     create_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -45,6 +50,13 @@ class Question(models.Model):
     def find_alike(cls):
         # TODO: 用关键词列表查询已缓存的相似问题返回问题列表，以决定缓存新回答时是否新建问题、遇到问题时取出缓存的备选答案
         pass
+
+    @classmethod
+    #更新app_question数据库
+    def update_questionlist(cls, dist):
+        u = User.objects.get(uid = dist['uid'])
+        q,created = Question.objects.get_or_create(user = u,content = dist['question'])
+        return q
 
 
 # [答案] ->[用户]|[问题]
@@ -60,6 +72,12 @@ class Answer(models.Model):
 
     def __str__(self):
         return '[%s] %s' % (self.user.name, self.content[:10])
+
+    @classmethod
+    def update_answerlist(cls, dist):
+        u = User.objects.get(uid = dist['uid'])
+        q = Question.objects.get(qid = dist['qid'])
+        a, created = Answer.objects.get_or_create(user=u, content=dist['answer'], question=q)
 
 
 # {用户标签} <=[用户]

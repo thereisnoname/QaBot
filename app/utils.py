@@ -15,7 +15,15 @@ logger = logging.getLogger("django")
 
 # Section A 数据库实体管理 Entity
 def update_userlist(users):
-    pass
+    User.update_userlist(users)
+    # u, created = User.objects.get_or_create(uid=users['uid'], nickname=users['nickname'], gender=users['gender'])
+
+def update_questionlist(ques):
+    q = Question.update_questionlist(ques)
+    return q
+
+def update_answerlist(ans):
+    Answer.update_answerlist(ans)
 
 
 def qa_snake(kw):
@@ -43,8 +51,10 @@ def json_load(byteData):
         jsonData = json.loads(strData, encoding='utf8', parse_int=int, parse_float=float)
         logger.info('Received Json Data: %s' % jsonData)
         return jsonData
-    except:
+    except :
+        raise
         return None
+
 
 
 # Section C 错误码 Error Code
@@ -55,6 +65,7 @@ def die(codeno):
         401: 'Not Authorized',
         403: 'Missing Parameter or TypeError',
         404: 'Resource Not Found',
+        405: 'Method Not Allowed',
         500: 'Server Internal Error',
     }
 

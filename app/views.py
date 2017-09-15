@@ -38,19 +38,39 @@ def user(request):
 @csrf_exempt
 def q(request):
     if request.method == 'POST':
-        data = json_load(request.body)
-        if not data:
-            return response_write(die(400))
-
+        data = json_load(request.body)      # TODO: what json format
+        if not (data and data.get('question')):
+            if data and data.get('uid'):
+                data={
+                    'answer':'where the fuck question is?',
+                    'qid':data.get('uid'),
+                }
+                return response_write(data)
+            return response_write({'ans':'where the fuck question is?'})
         uid = data.get('uid') or -1
         question = data.get('question') or ''
         print('Get <%s>: %s' % (uid, question))
-
+        ans = qa_snake(question)
         q = {
             'uid' : uid,
+            'keywords' : ans.get('keywords'),
             'question' : question,
         }
-        qid = update_questionlist(q).qid
+        similar_qid=find_alike(q)
+        if similar_qid:
+            #find the ans to this qid
+            #then return it!
+            # or maybe save the qid in the value qid
+            #the return qid is not the similar qid!!
+            ans = qid_get_ans_con(similar_qid)
+            data = {
+                'answer' : ans,
+                'qid' : qid,
+            }
+            return response_write(data)
+            #quchifan,denghuihuilaixie
+        else:
+            qid = update_questionlist(q).qid
 
         ans = Answer.objects.filter(question = qid)
         if ans.exists():
@@ -60,6 +80,7 @@ def q(request):
             }
         else:
             data = {
+                    #what's this??
                 'helpers': ['@dsfsd6s46SDVD', '@DVS68d4DVSvsDVSv4654v6s8'],
                 'qid': qid,
             }
@@ -92,15 +113,19 @@ def a(request):
         return response_write({'info': 'OK'})
 
 
+
 # Browser-oriented Views
 @csrf_exempt
 def index(request):
     if request.method == 'POST':
         kw = request.POST.get('kw')
         if kw:
-            ans = '暂时没设计好:('    # NOT urgent TODO: dispatch?
-            return render(request, 'index.html', {'ans': ans})
-    return render(request, 'index.html')
+            ans = qa_snake(kw)    # NOT urgent TODO: dispatch?
+            if ans:
+                return render(request, 'index.html', {'ans': ans})
+            else:
+                return render(request,'index.html',{'ans':'no such ans in qasnake'+'\t'+'key words is '+kw})
+    return render(request, 'index.html',{'ans':'no such keyword'})
 
 
 @csrf_exempt

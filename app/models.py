@@ -36,6 +36,18 @@ class User(models.Model):
         u,created = User.objects.get_or_create(uid=dict['uid'], nickname=dict['nickname'], gender=dict['gender'])
 
 # [问题] ->[用户] & =>{问题关键词} & <=[答案]
+def keywords_list_cmp(key_1,key_2):
+    #key_1 and key_2 are both key words list
+    #which came from the function split()
+    #return value means the number of words that both appear in key_1 and key_2
+    #the value can be zero
+    results = 0
+    for word_1 in key_1:
+        for word_2 in key_2:
+            if word_1 == word_2:
+                results = results + 1
+                break
+    return results
 class Question(models.Model):
     user = models.ForeignKey(User, help_text='题主')
     content = models.TextField(help_text='问题内容')
@@ -47,9 +59,17 @@ class Question(models.Model):
         return '[%s] %s' % (self.user.name, self.content[:10])
 
     @classmethod
-    def find_alike(cls):
+    def find_alike(cls,keywords):
         # TODO: 用关键词列表查询已缓存的相似问题返回问题列表，以决定缓存新回答时是否新建问题、遇到问题时取出缓存的备选答案
-        pass
+        # in fact, class answer is defined after class question,we cannot get answer here
+        # the return value is the qid
+        # qid can be null or false
+        key_list=keywords.split()
+        for word in key_list:
+            print ("\n key is " + word + "\n")
+
+        q = Question.objects.get(Keywords = keywords).qid
+        return q
 
     @classmethod
     #更新app_question数据库
@@ -79,6 +99,12 @@ class Answer(models.Model):
         q = Question.objects.get(qid = dist['qid'])
         a, created = Answer.objects.get_or_create(user=u, content=dist['answer'], question=q)
 
+    @classmethod
+    def qid_get_ans_con(cls,qid):
+    #return the answer's content to the question
+    #return value can be null or false ,for the wrong id or someting unexpected
+        ans = Answer.objects.get(qid = qid).content
+        return ans
 
 # {用户标签} <=[用户]
 class Tag(models.Model):

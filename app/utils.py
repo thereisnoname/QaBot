@@ -21,10 +21,20 @@ def update_userlist(users):
 def update_questionlist(ques):
     q = Question.update_questionlist(ques)
     return q
+def find_alike(ques):
+    #find whether there is a question that is similar to this question
+    #return : null  for  no such  question
+    #         qid   for there is such a question
+    #               selection algorithm is assigned in model? or here?
+    #               now we asume that selection algorithm had already done in the model
+    q = Question.update_questionlist(ques)
+    return q
 
 def update_answerlist(ans):
     Answer.update_answerlist(ans)
 
+def qid_get_ans_con(qid):
+    return Answer.qid_get_ans_con(qid)
 
 def qa_snake(kw):
     try:
@@ -32,12 +42,16 @@ def qa_snake(kw):
         client.connect((QASNAKE_HOST, QASNAKE_PORT))
         client.settimeout(30)
         client.send(kw.encode('utf8'))
+        keywords = client.recv(4096).decode('utf8')
         ans = client.recv(4096).decode('utf8')
+        result={
+            'kw':keywords,
+            'ans':ans,
+        }
         logger.info('[QA-Snake] %s...' % ans[:30])
-        return ans
+        return result
     except:
         return None
-
 
 # Section B 语法糖 Wrapper
 def response_write(jsonData):

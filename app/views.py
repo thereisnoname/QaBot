@@ -39,21 +39,38 @@ def user(request):
 def q(request):
     if request.method == 'POST':
         data = json_load(request.body)      # TODO: what json format
-        if data and data.get('kw'):
-            ans = qa_snake(data.get('kw'))
-            return response_write({'ans': ans})
-        else:
-            return response_write({'ans':'no such ans'})
-
+        if not (data and data.get('question')):
+            if data and data.get('uid'):
+                data={
+                    'answer':'where the fuck question is?',
+                    'qid':data.get('uid'),
+                }
+                return response_write(data)
+            return response_write({'ans':'where the fuck question is?'})
         uid = data.get('uid') or -1
         question = data.get('question') or ''
         print('Get <%s>: %s' % (uid, question))
-
+        ans = qa_snake(question)
         q = {
             'uid' : uid,
+            'keywords' : ans.get('keywords'),
             'question' : question,
         }
-        qid = update_questionlist(q).qid
+        similar_qid=find_alike(q)
+        if similar_qid:
+            #find the ans to this qid
+            #then return it!
+            # or maybe save the qid in the value qid
+            #the return qid is not the similar qid!!
+            ans = qid_get_ans_con(similar_qid)
+            data = {
+                'answer' : ans,
+                'qid' : qid,
+            }
+            return response_write(data)
+            #quchifan,denghuihuilaixie
+        else:
+            qid = update_questionlist(q).qid
 
         ans = Answer.objects.filter(question = qid)
         if ans.exists():
@@ -63,6 +80,7 @@ def q(request):
             }
         else:
             data = {
+                    #what's this??
                 'helpers': ['@dsfsd6s46SDVD', '@DVS68d4DVSvsDVSv4654v6s8'],
                 'qid': qid,
             }

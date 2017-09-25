@@ -53,7 +53,7 @@ def q(request):
         ans = qa_snake(question)
         q = {
             'uid' : uid,
-            'keywords' : ans.get('keywords'),
+            'keywords' : ans['kw'],
             'question' : question,
         }
         similar_qid=find_alike(q)
@@ -65,7 +65,8 @@ def q(request):
             ans = qid_get_ans_con(similar_qid)
             data = {
                 'answer' : ans,
-                'qid' : qid,
+                'qid' : similar_qid,
+                # so what is qid now??
             }
             return response_write(data)
             #quchifan,denghuihuilaixie
@@ -120,7 +121,27 @@ def index(request):
     if request.method == 'POST':
         kw = request.POST.get('kw')
         if kw:
-            ans = qa_snake(kw)    # NOT urgent TODO: dispatch?
+            re = qa_snake(kw)    # NOT urgent TODO: dispatch?
+            q = {
+                'uid': False,
+                'keywords': re['kw'],
+                'question': kw,
+            }
+            similar_qid = find_alike(q)
+            if similar_qid:
+                # in index, we just return the ans
+                # and now we got qid to the ans
+                #do nothing
+                pass
+            else:
+                qid = update_questionlist(q).qid
+                data = {
+                    'uid':0,
+                    'qid':qid,
+                    'ans':ans['ans'],
+                }
+                update_answerlist(data)
+            ans = Answer.objects.filter(question=qid)
             if ans:
                 return render(request, 'index.html', {'ans': ans})
             else:

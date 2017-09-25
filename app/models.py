@@ -59,23 +59,29 @@ class Question(models.Model):
         return '[%s] %s' % (self.user.name, self.content[:10])
 
     @classmethod
-    def find_alike(cls,keywords):
+    def find_alike(cls,ques):
         # TODO: 用关键词列表查询已缓存的相似问题返回问题列表，以决定缓存新回答时是否新建问题、遇到问题时取出缓存的备选答案
         # in fact, class answer is defined after class question,we cannot get answer here
         # the return value is the qid
         # qid can be null or false
+        keywords=ques['keywords']
         key_list=keywords.split()
         for word in key_list:
             print ("\n key is " + word + "\n")
-
         q = Question.objects.get(Keywords = keywords).qid
         return q
 
     @classmethod
     #更新app_question数据库
     def update_questionlist(cls, dist):
-        u = User.objects.get(uid = dist['uid'])
-        q,created = Question.objects.get_or_create(user = u,content = dist['question'])
+        #shall uid is null?
+        if dist['uid']:
+            u = User.objects.get(uid = dist['uid'])
+        else:
+            u = 'unknown'
+        #if uid cannot be null,comment 'if~~'unknown' '(4 lines) out,and uncomment the line below.
+        #u = User.objects.get(uid = dist['uid'])
+        q,created = Question.objects.get_or_create(user = u,content = dist['question'],keywords = dist['keywords'])
         return q
 
 
@@ -95,6 +101,7 @@ class Answer(models.Model):
 
     @classmethod
     def update_answerlist(cls, dist):
+    #dist { uid,qid,answer }
         u = User.objects.get(uid = dist['uid'])
         q = Question.objects.get(qid = dist['qid'])
         a, created = Answer.objects.get_or_create(user=u, content=dist['answer'], question=q)

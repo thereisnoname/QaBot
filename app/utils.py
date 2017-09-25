@@ -27,10 +27,15 @@ def find_alike(ques):
     #         qid   for there is such a question
     #               selection algorithm is assigned in model? or here?
     #               now we asume that selection algorithm had already done in the model
-    q = Question.update_questionlist(ques)
+    #we only care about ques['keywords']
+    q = Question.find_alike(ques)
     return q
 
 def update_answerlist(ans):
+    # dist { uid,qid,answer }
+    # WHAT!!!
+    #what is the uid for qabot?
+    #now I assume this id is zero
     Answer.update_answerlist(ans)
 
 def qid_get_ans_con(qid):

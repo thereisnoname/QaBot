@@ -48,6 +48,13 @@ def keywords_list_cmp(key_1,key_2):
                 results = results + 1
                 break
     return results
+# {问题关键词} <=[问题]
+class Keyword(models.Model):
+    name = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.name
+
 class Question(models.Model):
     user = models.ForeignKey(User, help_text='题主')
     content = models.TextField(help_text='问题内容')
@@ -65,11 +72,16 @@ class Question(models.Model):
         # the return value is the qid
         # qid can be null or false
         keywords=ques['keywords']
-        key_list=keywords.split()
+        key_list=keywords.split(' ')
         for word in key_list:
             print ("\n key is " + word + "\n")
-        q = Question.objects.get(Keywords = keywords).qid
-        return q
+        try:
+            q = Question.objects.get(keywords__name = keywords)
+        except Question.DoesNotExist:
+            q = False
+        if q:
+            return q.qid
+        return False
 
     @classmethod
     #更新app_question数据库
@@ -78,10 +90,11 @@ class Question(models.Model):
         if dist['uid']:
             u = User.objects.get(uid = dist['uid'])
         else:
-            u = 'unknown'
+            #do what?
+            pass
         #if uid cannot be null,comment 'if~~'unknown' '(4 lines) out,and uncomment the line below.
         #u = User.objects.get(uid = dist['uid'])
-        q,created = Question.objects.get_or_create(user = u,content = dist['question'],keywords = dist['keywords'])
+        q,created = Question.objects.get_or_create(user = u,content = dist['question'],keywords__name = dist['keywords'])
         return q
 
 
@@ -121,12 +134,6 @@ class Tag(models.Model):
         return self.name
 
 
-# {问题关键词} <=[问题]
-class Keyword(models.Model):
-    name = models.CharField(max_length=64)
-
-    def __str__(self):
-        return self.name
 
 
 # TODO: 这个表真的有必要吗？

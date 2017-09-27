@@ -72,25 +72,37 @@ def q(request):
             #quchifan,denghuihuilaixie
         else:
             qid = update_questionlist(q).qid
+            a = {
+                'uid': 1,
+                'qid': qid,
+                'answer': ans['ans']
+            }
+            update_answerlist(a)
 
         ans = Answer.objects.filter(question = qid)
         if ans.exists():
-            data = {
-                'answer': ans[0].content,
-                'qid': qid,
-            }
-        else:
-            data = {
-                    #what's this??
-                'helpers': ['@dsfsd6s46SDVD', '@DVS68d4DVSvsDVSv4654v6s8'],
-                'qid': qid,
-            }
+            for final_ans in ans:
+                if final_ans:
+                    if final_ans.content:
+                        data = {
+                            'answer': ans[0].content,
+                            'qid': qid,
+                        }
+                        return response_write(data)
+        data = {
+                #what's this??
+            'helpers': ['@dsfsd6s46SDVD', '@DVS68d4DVSvsDVSv4654v6s8'],
+            'qid': qid,
+        }
         return response_write(data)
+
 
 
 @csrf_exempt
 def a(request):
+    print("in a")
     if request.method == 'POST':
+        print("in a")
         data = json_load(request.body)
         if not data:
             return response_write(die(400))
@@ -112,6 +124,7 @@ def a(request):
         update_answerlist(a)
 
         return response_write({'info': 'OK'})
+   # return response_write({'info': 'NOT POST?'})
 
 
 
@@ -123,7 +136,7 @@ def index(request):
         if kw:
             re = qa_snake(kw)    # NOT urgent TODO: dispatch?
             q = {
-                'uid': False,
+                'uid': 1,
                 'keywords': re['kw'],
                 'question': kw,
             }
@@ -132,20 +145,23 @@ def index(request):
                 # in index, we just return the ans
                 # and now we got qid to the ans
                 #do nothing
+                qid = similar_qid
                 pass
             else:
+                print ("\n key is "+q['keywords'])
                 qid = update_questionlist(q).qid
                 data = {
-                    'uid':0,
+                    'uid':1,
                     'qid':qid,
-                    'ans':ans['ans'],
+                    'answer':re['ans'],
                 }
                 update_answerlist(data)
             ans = Answer.objects.filter(question=qid)
-            if ans:
-                return render(request, 'index.html', {'ans': ans})
-            else:
-                return render(request,'index.html',{'ans':'no such ans in qasnake'+'\t'+'key words is '+kw})
+            for final_ans in ans :
+                if final_ans:
+                    if final_ans.content:
+                        return render(request, 'index.html', {'ans': final_ans.content})
+            return render(request,'index.html',{'ans':'no such ans in qasnake'+'\t'+'key words is '+kw})
     return render(request, 'index.html',{'ans':'no such keyword'})
 
 

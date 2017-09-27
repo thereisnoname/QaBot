@@ -34,6 +34,7 @@ class User(models.Model):
     @classmethod
     def update_userlist(cls,dict):
         u,created = User.objects.get_or_create(uid=dict['uid'], nickname=dict['nickname'], gender=dict['gender'])
+        print(u,created)
 
 # [问题] ->[用户] & =>{问题关键词} & <=[答案]
 def keywords_list_cmp(key_1,key_2):
@@ -87,11 +88,6 @@ class Question(models.Model):
     #更新app_question数据库
     def update_questionlist(cls, dist):
         #shall uid is null?
-        if dist['uid']:
-            u = User.objects.get(uid = dist['uid'])
-        else:
-            #do what?
-            pass
         #if uid cannot be null,comment 'if~~'unknown' '(4 lines) out,and uncomment the line below.
         #u = User.objects.get(uid = dist['uid'])
         q,created = Question.objects.get_or_create(user = u,content = dist['question'],keywords__name = dist['keywords'])
@@ -115,9 +111,12 @@ class Answer(models.Model):
     @classmethod
     def update_answerlist(cls, dist):
     #dist { uid,qid,answer }
-        u = User.objects.get(uid = dist['uid'])
-        q = Question.objects.get(qid = dist['qid'])
-        a, created = Answer.objects.get_or_create(user=u, content=dist['answer'], question=q)
+        try:
+            u = User.objects.get(uid = dist['uid'])
+            q = Question.objects.get(qid = dist['qid'])
+            a, created = Answer.objects.get_or_create(user=u, content=dist['answer'], question=q)
+        except:
+            print("poinson")
 
     @classmethod
     def qid_get_ans_con(cls,qid):

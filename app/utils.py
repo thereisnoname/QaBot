@@ -56,7 +56,6 @@ def qa_snake(kw):
         logger.info('[QA-Snake] %s...' % ans[:30])
         return result
     except:
-        raise
         return None
 
 # Section B 语法糖 Wrapper

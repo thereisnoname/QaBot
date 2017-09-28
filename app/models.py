@@ -76,11 +76,12 @@ class Question(models.Model):
         for word in key_list:
             print ("\n key is " + word + "\n")
         try:
-            q = Question.objects.get(keywords__name = keywords)
+            q = Question.objects.filter(keywords__name = keywords)
         except Question.DoesNotExist:
             q = False
         if q:
-            return q.qid
+            if q[0]:
+                return q[0].qid
         return False
 
     @classmethod
@@ -94,7 +95,9 @@ class Question(models.Model):
             pass
         #if uid cannot be null,comment 'if~~'unknown' '(4 lines) out,and uncomment the line below.
         #u = User.objects.get(uid = dist['uid'])
-        q,created = Question.objects.get_or_create(user = u,content = dist['question'],keywords__name = dist['keywords'])
+        p,created = Keyword.objects.get_or_create(name = dist['keywords'])
+        q,created = Question.objects.get_or_create(user = u,content = dist['question'])
+        q.keywords.add(p)
         return q
 
 

@@ -90,7 +90,7 @@ class Question(models.Model):
     def update_questionlist(cls, dist):
         #shall uid is null?
         #if uid cannot be null,comment 'if~~'unknown' '(4 lines) out,and uncomment the line below.
-        #u = User.objects.get(uid = dist['uid'])
+        u = User.objects.get(uid = dist['uid'])
         p,created = Keyword.objects.get_or_create(name = dist['keywords'])
         q,created = Question.objects.get_or_create(user = u,content = dist['question'])
         q.keywords.add(p)

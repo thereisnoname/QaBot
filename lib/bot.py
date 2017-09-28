@@ -96,6 +96,13 @@ class QaBot(WXBot):
 
     def send_contact_book(self):
         data = {'users': []}
+        # Dummy bot account
+        u = {
+            u'id': 'QaBot',
+            u'nickname': 'QaBot',
+            u'gender': 0,
+        }
+        data['users'].append(u)
         for u in self.contact_list:
             u = {
                 u'id': u.get('UserName'),
@@ -103,6 +110,11 @@ class QaBot(WXBot):
                 u'gender': u.get('Sex'),
             }
             data['users'].append(u)
+        f = open('user.list', 'w+')
+        import json
+        f.write(json.loads(data))
+        f.flush()
+        f.close()
         try:
             requests.post(url=URL_USER, json=data)
             print('[Contact] Sent %d contacts info :)' % len(data['users']))

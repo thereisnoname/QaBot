@@ -37,7 +37,8 @@ def user(request):
 
 @csrf_exempt
 def q(request):
-    if request.method == 'POST':
+    # if request.method == 'POST':
+    if True:
         data = json_load(request.body)      # TODO: what json format
         if not (data and data.get('question')):
             if data and data.get('uid'):
@@ -47,7 +48,7 @@ def q(request):
                 }
                 return response_write(data)
             return response_write({'ans':'where the fuck question is?'})
-        uid = data.get('uid') or -1
+        uid = data.get('uid') or '-1'
         question = data.get('question') or ''
         print('Get <%s>: %s' % (uid, question))
         ans = qa_snake(question)
@@ -73,7 +74,7 @@ def q(request):
         else:
             qid = update_questionlist(q).qid
             a = {
-                'uid': 1,
+                'uid': 'QaBot',
                 'qid': qid,
                 'answer': ans['ans']
             }
